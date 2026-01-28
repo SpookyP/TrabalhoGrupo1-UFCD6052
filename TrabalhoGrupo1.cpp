@@ -75,12 +75,19 @@ void Inserir(string** x) {
     x[idProd][3] = preco;
 }
 
-void EditarOP(int op, string** x) {
+int EditarOP(int op, string** x) {
     int i;
     string name;
     float preco;
     int stock;
     bool repetido;
+    
+    if (op > idProd)
+    {
+        cout << "Opcao Invalida";
+        return 0;
+    }
+
     cout << endl << "@@@@@@@@@@@@@@@@@@" << endl; //UI
     cout << "@                @" << endl;
     cout << "@  1 - Nome      @" << endl;
@@ -160,10 +167,11 @@ void Eliminar(int op, string** x) {
             x[i - 1][3] = x[i][3];
         }
     }
+    x[idProd][1] = "";
     idProd--; // Esquecer ultimo item
 }
 
-int ListProd(string** x,int aux) {
+int ListEd(string** x,int aux) {
     int op;
     bool notempty = 0;
 
@@ -209,7 +217,84 @@ int ListProd(string** x,int aux) {
     
 }
 
-void Venda() {
+void ProdBase(string** x) {
+    idProd = 1;
+    x[1][0] = 1;
+    x[1][1] = "Bolachas";
+    x[1][2] = 5;
+    x[1][3] = 2.90;
+}
+
+int ProdList(string** x) {
+    char index;
+    bool notempty = 0;
+    if (idProd < 1) {   //Quando ID = 0 Quer dizer que nenhum item existe ainda
+        system("cls");
+        cout << "Nenhum produto encontrado";
+        return 0;
+    }
+    for (int i = 0; i <= idProd; i++)   //Verificar se o tamanho do nome é 0 em todos, se sim entao nao existem items
+    {
+        if (x[i][1].length() > 0) {
+            notempty = 1;
+        }
+    }
+    if (!(notempty)) {
+        system("cls");
+        cout << "Nenhum produto encontrado";
+        return 0;
+    }
+
+    cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;   //inicio Lista
+    for (int i = 1; i <= idProd; i++)
+    {
+        cout << "|" << endl;
+        cout << "| " << i << " - " << x[i][1] << endl;
+    }
+    cout << "|" << endl;
+    cout << "@@@@@@@@@@@@@@@@@@" << endl;
+    cout << "Prima 0";
+    cin >> index;  // Esperar input do user
+    system("cls");
+}
+
+int VendaUI() {
+    int x;
+    cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;
+    cout << "@                @" << endl;
+    cout << "@  1 - Produtos  @" << endl;
+    cout << "@  2 - Adicionar @" << endl;
+    cout << "@  3 - Carrinho  @" << endl;
+    cout << "@  4 - Checkout  @" << endl;
+    cout << "@  5 - Cancelar  @" << endl;
+    cout << "@                @" << endl;
+    cout << "@@@@@@@@@@@@@@@@@@" << endl;
+    cin >> x;
+    return x;
+    system("cls");
+}
+
+int Venda(string** x) {
+    while (true) {
+        switch (VendaUI()) {
+        case 1:     //Listar
+            ProdList(x);
+            break;
+        case 2:     //Adicionar ao carrinho
+            ListEd(x, 1);  // 1 - Para Editar
+            break;
+        case 3:     //Eliminar
+            ListEd(x, 2); // 2 - Para Eliminar
+            break;
+        case 4:     //Voltar
+            system("cls");
+            return 0;
+        default:     //Erro
+            cout << " Invalid Result!";
+            break;
+        }
+    }
+    system("cls");
 }
 
 int ProdutoUI() { // User Interface
@@ -234,10 +319,10 @@ int Produto(string** x) {     // Produto Manager Logic
             Inserir(x);
             break;
         case 2:     //Editar
-            ListProd(x,1);  // 1 - Para Editar
+            ListEd(x,1);  // 1 - Para Editar
             break;
         case 3:     //Eliminar
-            ListProd(x,2); // 2 - Para Eliminar
+            ListEd(x,2); // 2 - Para Eliminar
             break;
         case 4:     //Voltar
             system("cls");
@@ -259,10 +344,13 @@ int main()
         prodlist[i] = new string[4];
     }
 
+    ProdBase(prodlist);
+
     bool flagProd = 0; // if = 0 dont leave loop
     while (true) {
         switch (Menu()) {
             case 1:     //Venda
+                Venda(prodlist);
                 break;
             case 2:     //Produto
                 Produto(prodlist);
@@ -270,7 +358,7 @@ int main()
             case 3:     //Sair
                 return 0;
             default:
-                cout << " Invalid Result!";
+                cout << "Resultado Invalido!";
                 break;
         }
     }
