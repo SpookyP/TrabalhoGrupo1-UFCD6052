@@ -21,7 +21,7 @@ int menu() {
     cout << "@  2 - Produto   @" << endl;
     cout << "@  3 - Sair      @" << endl;
     cout << "@                @" << endl;
-    cout << "@@@@@@@@@@@@@@@@@@V1" << endl;
+    cout << "@@@@@@@@@@@@@@@@@@" << endl;
     cin >> x;
     limpaEcra();
     return x;
@@ -227,10 +227,10 @@ int listEd(string** x,int aux) {
 
 void prodBase(string** x) {
     idProd = 1;
-    x[1][0] = 1;
+    x[1][0] = "1";
     x[1][1] = "Bolachas";
-    x[1][2] = 5;
-    x[1][3] = 2.90;
+    x[1][2] = "5";
+    x[1][3] = "2.90";
 }
 
 int prodList(string** x) {
@@ -259,7 +259,10 @@ int prodList(string** x) {
         if (x[i][2] != "0") // So mostrar produtos com stock
         {
             cout << "|" << endl;
-            cout << "| " << i << " - " << x[i][1] << " - " << x[i][3] << " € - " << x[i][2] << " - " << endl;
+            cout << "| " << i << " - " << x[i][1] << " - " << x[i][3] << " € - " << x[i][2] << endl;
+        }else {
+            cout << "|" << endl;
+            cout << "| " << i << " - " << x[i][1] << " Fora de Stock " << endl;
         }
     }
     cout << "|" << endl;
@@ -286,32 +289,94 @@ int vendaUI() {
     limpaEcra();
 }
 
-int adicionarCarrinho(string** x) {
-    
+int adicionarCarrinho(string** x, string** carrinho) {
+    bool notempty = 0;
+    int op;
+    int qtd;
+    if (idProd < 1) {   //Quando ID = 0 Quer dizer que nenhum item existe ainda
+        limpaEcra();
+        cout << "Nenhum produto encontrado";
+        return 0;
+    }
+    for (int i = 0; i <= idProd; i++)   //Verificar se o tamanho do nome � 0 em todos, se sim entao nao existem items
+    {
+        if (x[i][1].length() > 0) {
+            notempty = 1;
+        }
+    }
+    if (!(notempty)) {
+        limpaEcra();
+        cout << "Nenhum produto encontrado";
+        return 0;
+    }
+
+    cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;   //inicio Lista
+
+    do 
+    {
+        for (int i = 1; i <= idProd; i++)
+        {
+            if (x[i][2] != "0") // So mostrar produtos com stock
+            {
+                cout << "|" << endl;
+                cout << "| " << i << " - " << x[i][1] << " - " << x[i][3] << " € - " << x[i][2] << endl;
+            }else {
+                cout << "|" << endl;
+                cout << "| " << i << " - " << x[i][1] << " Fora de Stock " << endl;
+            }
+        }
+        cout << "|" << endl;
+        cout << "@@@@@@@@@@@@@@@@@@" << endl;
+        
+        cout << "Escolha o produto: ";
+        cin >> op;
+        limpaEcra();
+    } while (x[op][2] < "0");
+
+    do
+    {
+        cout << endl << "@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+        cout << "@                     @" << endl;
+        cout << "@ Inserir Quantidade: @" << endl;
+        cout << "@                     @" << endl;
+        cout << "@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+        cin >> qtd;
+        limpaEcra();
+        if (qtd <= 0 || qtd > stoi(x[op][2]))
+            cout << "Quantidade Invalida";
+    } while (qtd <= 0 || qtd > stoi(x[op][2]));
+
+    limpaEcra();
+    x[op][2] = stoi(x[op][2]) - qtd;
+    carrinho[op][1] = x[op][1];
+    cout << stoi(x[op][2]);
 }
 
 
-int venda(string** x) {
+int venda(string** x, string** carrinho) {
     while (true) {
         switch (vendaUI()) {
         case 1:     //Listar
             prodList(x);
             break;
         case 2:     //Adicionar ao carrinho
-            adicionarCarrinho(x);  
+            adicionarCarrinho(x, carrinho);  
             break;
-        case 3:     //Eliminar
-            listEd(x, 2); // 2 - Para eliminar
+        case 3:     //Carrinho
+            limpaEcra(); 
             break;
-        case 4:     //Voltar
-            system("cls");
-            return 0;
+        case 4:     //Checkout
+            limpaEcra();
+            break;
+        case 5:     //Voltar
+        limpaEcra();
+        return 0;
         default:     //Erro
             cout << " Invalid Result!";
             break;
         }
     }
-    system("cls");
+    limpaEcra();
 }
 
 int produtoUI() { // User Interface
@@ -326,7 +391,7 @@ int produtoUI() { // User Interface
     cout << "@@@@@@@@@@@@@@@@@@" << endl;
     cin >> x;
     return x;
-    system("cls");
+    limpaEcra();
 }
 
 int produto(string** x) {     // Produto Manager Logic
@@ -342,14 +407,14 @@ int produto(string** x) {     // Produto Manager Logic
             listEd(x,2); // 2 - Para Eliminar
             break;
         case 4:     //Voltar
-            system("cls");
+            limpaEcra();
             return 0;
         default:     //Erro
             cout << " Invalid Result!";
             break;
         }
     }
-    system("cls");
+    limpaEcra();
 }
 
 
@@ -361,9 +426,9 @@ int main()
         prodlist[i] = new string[4];
     }
 
-    string** carrinho = new string * [100]; // 0 - ID; 1 - Nome; 2 - Stock; 3 - Preco
+    string** carrinho = new string * [100]; // 0 - ID; 1 - Nome;
     for (int i = 0; i < 100; ++i) {
-        carrinho[i] = new string[4];
+        carrinho[i] = new string[2];
     }
 
     prodBase(prodlist);
@@ -371,7 +436,7 @@ int main()
     while (true) {
         switch (menu()) {
             case 1:     //Venda
-                venda(prodlist);
+                venda(prodlist, carrinho);
                 break;
             case 2:     //Produto
                 produto(prodlist);
