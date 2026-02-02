@@ -1,5 +1,6 @@
 #include <iostream>
-#include <cstdlib>
+#include <ctime>
+//#include <cstdlib>
 #include <string>
 using namespace std;
 
@@ -361,6 +362,10 @@ int adicionarCarrinho(string** x, string** carrinho) {
 
 int checkout(string** x) {
     bool notempty = 0;
+    double moedas;
+    time_t now = time(nullptr);
+    double total;
+
     if (idProd < 1) {   //Quando ID = 0 Quer dizer que nenhum item existe ainda
         limpaEcra();
         cout << "Nenhum produto encontrado";
@@ -380,29 +385,32 @@ int checkout(string** x) {
 
     cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;   //inicio Lista
     double tiva = 0;
-    for (int i = 1; i <= idProd; i++)
-    {
-        if (x[i][2] != "0") // So mostrar produtos com stock
+    do
+    { 
+        for (int i = 1; i <= idProd; i++)
         {
-            cout << "|" << endl;
-            cout << "| " << i << " - " << x[i][1] << " - " << x[i][3] << " € - " << x[i][2] << endl;
+            if (x[i][2] != "0") // So mostrar produtos com stock
+            {
+                cout << "|" << endl;
+                cout << "| " << i << " - " << x[i][1] << " - " << x[i][3] << " € - " << x[i][2] << endl;
 
-            tiva += (stod(x[i][3]) + stod(x[i][3]) * iva) * stod(x[i][2]);
-        }
-        else {
-            cout << "|" << endl;
-            cout << "| " << i << " - " << x[i][1] << " Fora de Stock " << endl;
-        }
+                total = total + (stod(x[i][3]) * stoi(x[i][2]));
+                tiva = total + (total * iva);
+            }
+            else {
+                cout << "|" << endl;
+                cout << "| " << i << " - " << x[i][1] << " Fora de Stock " << endl;
+            }
 
-    }
-    cout << "| Total c/IVA:" << tiva << endl;
-    cout << "@@@@@@@@@@@@@@@@@@" << endl;
-    cout << "insira moedas";
-    cin.ignore();
-    cin.get();              // valor inserido
-    limpaEcra();
+        }
+        cout << "| Total c/IVA:" << tiva << endl;
+        cout << "@@@@@@@@@@@@@@@@@@" << endl;
+        cout << "Insira moedas";
+        cin >> moedas;              // valor inserido
+        limpaEcra();
+    }while(moedas <= tiva || moedas == 0);        // verificar se é suficiente
     
-    if (true) {                 //se pagamento bem sucedido
+    if (moedas != 0) {                 //se pagamento bem sucedido
         cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;
         cout  << "@     Fatura     @" << endl;
         cout << "@@@@@@@@@@@@@@@@@@" << endl;
@@ -411,7 +419,7 @@ int checkout(string** x) {
         idFatura++;
         cout << "| Nº Cliente:  " << idCliente << endl;
         idCliente++;
-        cout << "| Data:" << endl;          //diahora
+        cout << "| Data:" << ctime(&now) << endl;          //diahora
         for (int i = 0; i < idProd; i++)
         {
             cout << "|" << endl;
@@ -420,11 +428,11 @@ int checkout(string** x) {
         }
         cout << "|" << endl;
         cout << "|" << endl;
-        cout << "| Inserido     :   " << endl;              //meter inserido
-        cout << "| Total        :   " << tiva << endl;      //total sem iva
-        cout << "| IVA          :   " << tiva << endl;      //só iva
+        cout << "| Inserido     :   " << moedas << endl;    
+        cout << "| Total        :   " << total << endl;      //total sem iva
+        cout << "| IVA          :   " << tiva - total << endl;      //só iva
         cout << "| Total a Pagar:   " << tiva <<endl;       //prob needs change
-        cout << "| Troco:" << endl;                         //resto
+        cout << "| Troco:" << moedas - tiva << endl;                         //resto
     }
     else {  //cancelar compra e limpar carrinho
 
@@ -463,9 +471,9 @@ int produtoUI() { // User Interface
     int x;
     cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;
     cout << "@                @" << endl;
-    cout << "@  1 - inserir   @" << endl;
+    cout << "@  1 - Inserir   @" << endl;
     cout << "@  2 - Editar    @" << endl;
-    cout << "@  3 - eliminar  @" << endl;
+    cout << "@  3 - Eliminar  @" << endl;
     cout << "@  4 - Voltar    @" << endl;
     cout << "@                @" << endl;
     cout << "@@@@@@@@@@@@@@@@@@" << endl;
