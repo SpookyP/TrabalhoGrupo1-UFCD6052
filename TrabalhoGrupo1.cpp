@@ -180,7 +180,7 @@ int ListEd(string** x,int aux) {
         cout << "Nenhum produto encontrado";
         return 0;
     }
-    for (int i = 0; i <= idProd; i++)   //Verificar se o tamanho do nome é 0 em todos, se sim entao nao existem items
+    for (int i = 0; i <= idProd; i++)   //Verificar se o tamanho do nome ï¿½ 0 em todos, se sim entao nao existem items
     {
         if (x[i][1].length()>0) {
             notempty = 1;
@@ -233,7 +233,7 @@ int ProdList(string** x) {
         cout << "Nenhum produto encontrado";
         return 0;
     }
-    for (int i = 0; i <= idProd; i++)   //Verificar se o tamanho do nome é 0 em todos, se sim entao nao existem items
+    for (int i = 0; i <= idProd; i++)   //Verificar se o tamanho do nome ï¿½ 0 em todos, se sim entao nao existem items
     {
         if (x[i][1].length() > 0) {
             notempty = 1;
@@ -335,7 +335,7 @@ int Produto(string** x) {     // Produto Manager Logic
     system("cls");
 }
 
-
+//TESTE 
 
 int main()
 {
