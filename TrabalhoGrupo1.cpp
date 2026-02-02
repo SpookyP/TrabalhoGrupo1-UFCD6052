@@ -5,7 +5,15 @@ using namespace std;
 
 int idProd=0;//ID Base Produtos
 
-int Menu() {
+void limpaEcra(){
+    #ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+}
+
+int menu() {
     int x;
     cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;
     cout << "@                @" << endl;
@@ -13,20 +21,20 @@ int Menu() {
     cout << "@  2 - Produto   @" << endl;
     cout << "@  3 - Sair      @" << endl;
     cout << "@                @" << endl;
-    cout << "@@@@@@@@@@@@@@@@@@" << endl;
+    cout << "@@@@@@@@@@@@@@@@@@V1" << endl;
     cin >> x;
-    system("cls");
+    limpaEcra();
     return x;
 }
 
-void Inserir(string** x) {
+void inserir(string** x) {
     string name;
     float preco;
     int stock;
     bool repetido;
     idProd++;
     x[idProd][0] = idProd;
-    system("cls");
+    limpaEcra();
     do {
         repetido = 0;
         cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;
@@ -35,7 +43,7 @@ void Inserir(string** x) {
         cout << "@                @" << endl;
         cout << "@@@@@@@@@@@@@@@@@@" << endl;
         cin >> name;
-        system("cls");
+        limpaEcra();
         for (int i = 0; i <= idProd; i++)
         {
             if (name == x[i][1])
@@ -54,7 +62,7 @@ void Inserir(string** x) {
         cout << "@                @" << endl;
         cout << "@@@@@@@@@@@@@@@@@@" << endl;
         cin >> stock;
-        system("cls");
+        limpaEcra();
         if (stock <= 0)
             cout << "Stock invalido";
     } while (stock <= 0);
@@ -67,7 +75,7 @@ void Inserir(string** x) {
         cout << "@                @" << endl;
         cout << "@@@@@@@@@@@@@@@@@@" << endl;
         cin >> preco;
-        system("cls");
+        limpaEcra();
         if (preco <= 0)
             cout << "Preco invalido";
     } while (preco <= 0);
@@ -75,7 +83,7 @@ void Inserir(string** x) {
     x[idProd][3] = preco;
 }
 
-int EditarOP(int op, string** x) {
+int editarOP(int op, string** x) {
     int i;
     string name;
     float preco;
@@ -96,7 +104,7 @@ int EditarOP(int op, string** x) {
     cout << "@                @" << endl;
     cout << "@@@@@@@@@@@@@@@@@@" << endl;
     cin >> i;
-    system("cls");
+    limpaEcra();
     switch (i) {
     case 1: //Editar o nome
         do {
@@ -107,7 +115,7 @@ int EditarOP(int op, string** x) {
             cout << "@                @" << endl;
             cout << "@@@@@@@@@@@@@@@@@@" << endl;
             cin >> name;
-            system("cls");
+            limpaEcra();
             for (int i = 0; i <= idProd; i++)
             {
                 if (name == x[i][1])
@@ -127,7 +135,7 @@ int EditarOP(int op, string** x) {
             cout << "@                @" << endl;
             cout << "@@@@@@@@@@@@@@@@@@" << endl;
             cin >> stock;
-            system("cls");
+            limpaEcra();
             if (stock <= 0)
                 cout << "Stock invalido";
         } while (stock <= 0);
@@ -141,7 +149,7 @@ int EditarOP(int op, string** x) {
             cout << "@                @" << endl;
             cout << "@@@@@@@@@@@@@@@@@@" << endl;
             cin >> preco;
-            system("cls");
+            limpaEcra();
             if (preco <= 0)
                 cout << "Preco invalido";
         } while (preco <= 0);
@@ -149,14 +157,14 @@ int EditarOP(int op, string** x) {
         x[op][3] = preco;
         break;
     default:
-        system("cls");
+        limpaEcra();
         cout << "Opcao Invalida";
         break;
     }
 
 }
 
-void Eliminar(int op, string** x) {
+void eliminar(int op, string** x) {
     
     for (int i = 0; i <= idProd; i++) // Eliminar = trocar tudo a frente do ID a ser apagado
     {
@@ -171,12 +179,12 @@ void Eliminar(int op, string** x) {
     idProd--; // Esquecer ultimo item
 }
 
-int ListEd(string** x,int aux) {
+int listEd(string** x,int aux) {
     int op;
     bool notempty = 0;
 
     if (idProd < 1) {   //Quando ID = 0 Quer dizer que nenhum item existe ainda
-        system("cls");
+        limpaEcra();
         cout << "Nenhum produto encontrado";
         return 0;
     }
@@ -187,7 +195,7 @@ int ListEd(string** x,int aux) {
         }
     }
     if (!(notempty)) {
-        system("cls");
+        limpaEcra();
         cout << "Nenhum produto encontrado";
         return 0;
     }
@@ -202,14 +210,14 @@ int ListEd(string** x,int aux) {
     cout << "|" << endl;
     cout << "@@@@@@@@@@@@@@@@@@" << endl;
     cin >> op;  // ID a ser Editado ou Eliminado
-    system("cls");
+    limpaEcra();
     switch (aux)
     {
         case 1:
-            EditarOP(op, x);
+            editarOP(op, x);
             break;
         case 2:
-            Eliminar(op, x);
+            eliminar(op, x);
             break;
         default:
         break;
@@ -217,7 +225,7 @@ int ListEd(string** x,int aux) {
     
 }
 
-void ProdBase(string** x) {
+void prodBase(string** x) {
     idProd = 1;
     x[1][0] = 1;
     x[1][1] = "Bolachas";
@@ -225,11 +233,10 @@ void ProdBase(string** x) {
     x[1][3] = 2.90;
 }
 
-int ProdList(string** x) {
-    char index;
+int prodList(string** x) {
     bool notempty = 0;
     if (idProd < 1) {   //Quando ID = 0 Quer dizer que nenhum item existe ainda
-        system("cls");
+        limpaEcra();
         cout << "Nenhum produto encontrado";
         return 0;
     }
@@ -240,25 +247,30 @@ int ProdList(string** x) {
         }
     }
     if (!(notempty)) {
-        system("cls");
+        limpaEcra();
         cout << "Nenhum produto encontrado";
         return 0;
     }
 
     cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;   //inicio Lista
+
     for (int i = 1; i <= idProd; i++)
     {
-        cout << "|" << endl;
-        cout << "| " << i << " - " << x[i][1] << endl;
+        if (x[i][2] != "0") // So mostrar produtos com stock
+        {
+            cout << "|" << endl;
+            cout << "| " << i << " - " << x[i][1] << " - " << x[i][3] << " € - " << x[i][2] << " - " << endl;
+        }
     }
     cout << "|" << endl;
     cout << "@@@@@@@@@@@@@@@@@@" << endl;
-    cout << "Prima 0";
-    cin >> index;  // Esperar input do user
-    system("cls");
+    cout << "Prima Enter";
+    cin.ignore();
+    cin.get(); 
+    limpaEcra();
 }
 
-int VendaUI() {
+int vendaUI() {
     int x;
     cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;
     cout << "@                @" << endl;
@@ -271,20 +283,25 @@ int VendaUI() {
     cout << "@@@@@@@@@@@@@@@@@@" << endl;
     cin >> x;
     return x;
-    system("cls");
+    limpaEcra();
 }
 
-int Venda(string** x) {
+int adicionarCarrinho(string** x) {
+    
+}
+
+
+int venda(string** x) {
     while (true) {
-        switch (VendaUI()) {
+        switch (vendaUI()) {
         case 1:     //Listar
-            ProdList(x);
+            prodList(x);
             break;
         case 2:     //Adicionar ao carrinho
-            ListEd(x, 1);  // 1 - Para Editar
+            adicionarCarrinho(x);  
             break;
         case 3:     //Eliminar
-            ListEd(x, 2); // 2 - Para Eliminar
+            listEd(x, 2); // 2 - Para eliminar
             break;
         case 4:     //Voltar
             system("cls");
@@ -297,13 +314,13 @@ int Venda(string** x) {
     system("cls");
 }
 
-int ProdutoUI() { // User Interface
+int produtoUI() { // User Interface
     int x;
     cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;
     cout << "@                @" << endl;
-    cout << "@  1 - Inserir   @" << endl;
+    cout << "@  1 - inserir   @" << endl;
     cout << "@  2 - Editar    @" << endl;
-    cout << "@  3 - Eliminar  @" << endl;
+    cout << "@  3 - eliminar  @" << endl;
     cout << "@  4 - Voltar    @" << endl;
     cout << "@                @" << endl;
     cout << "@@@@@@@@@@@@@@@@@@" << endl;
@@ -312,17 +329,17 @@ int ProdutoUI() { // User Interface
     system("cls");
 }
 
-int Produto(string** x) {     // Produto Manager Logic
+int produto(string** x) {     // Produto Manager Logic
     while (true) {
-        switch (ProdutoUI()) {
+        switch (produtoUI()) {
         case 1:     //Inserir
-            Inserir(x);
+            inserir(x);
             break;
         case 2:     //Editar
-            ListEd(x,1);  // 1 - Para Editar
+            listEd(x,1);  // 1 - Para Editar
             break;
         case 3:     //Eliminar
-            ListEd(x,2); // 2 - Para Eliminar
+            listEd(x,2); // 2 - Para Eliminar
             break;
         case 4:     //Voltar
             system("cls");
@@ -335,7 +352,7 @@ int Produto(string** x) {     // Produto Manager Logic
     system("cls");
 }
 
-//TESTE 
+
 
 int main()
 {
@@ -344,16 +361,20 @@ int main()
         prodlist[i] = new string[4];
     }
 
-    ProdBase(prodlist);
+    string** carrinho = new string * [100]; // 0 - ID; 1 - Nome; 2 - Stock; 3 - Preco
+    for (int i = 0; i < 100; ++i) {
+        carrinho[i] = new string[4];
+    }
 
-    bool flagProd = 0; // if = 0 dont leave loop
+    prodBase(prodlist);
+
     while (true) {
-        switch (Menu()) {
+        switch (menu()) {
             case 1:     //Venda
-                Venda(prodlist);
+                venda(prodlist);
                 break;
             case 2:     //Produto
-                Produto(prodlist);
+                produto(prodlist);
                 break;
             case 3:     //Sair
                 return 0;
