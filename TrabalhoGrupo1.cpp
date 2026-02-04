@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <algorithm>
+#include <cctype>
 #pragma warning(disable : 4996)
 #include <ctime>
 
@@ -50,12 +52,20 @@ void inserir(string** x) {
         cout << "@@@@@@@@@@@@@@@@@@" << endl;
         cin >> name;
         limpaEcra();
+        //Verificar Nome Repetido
         for (int i = 0; i <= idProd; i++)
         {
-            if (name == x[i][1])
+            string nomeExiste = x[i][1];
+            if (nomeExiste.length() == name.length()) {
                 repetido = 1;
-
-        }
+                for (size_t j = 0; j < name.length(); j++) {
+                    if (tolower(nomeExiste[j]) != tolower(name[j])) {
+                        repetido = 0;
+                        break;
+                    }
+                }
+            }
+		}
 
         x[idProd][1] = name;
         if (repetido)
@@ -123,13 +133,22 @@ int editarOP(int op, string** x) {
             cout << "@@@@@@@@@@@@@@@@@@" << endl;
             cin >> name;
             limpaEcra();
+            //Verificar Nome Repetido
             for (int i = 0; i <= idProd; i++)
             {
-                if (name == x[i][1])
+                string nomeExiste = x[i][1];
+                if (nomeExiste.length() == name.length()) {
                     repetido = 1;
+                    for (size_t j = 0; j < name.length(); j++) {
+                        if (tolower(nomeExiste[j]) != tolower(name[j])) {
+                            repetido = 0;
+                            break;
+                        }
+                    }
+                }
             }
 
-            x[op][1] = name;
+            x[idProd][1] = name;
             if (repetido)
                 cout << "Nome Repetido" << endl;
         } while (repetido);
