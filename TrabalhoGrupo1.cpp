@@ -1,5 +1,4 @@
 #include <iostream>
-//#include <cstdlib>
 #include <string>
 #pragma warning(disable : 4996)
 #include <ctime>
@@ -7,7 +6,8 @@
 using namespace std;
 
 int idProd=0;//ID Base Produtos
-float iva = 0.30;
+float iva = 0.23;
+float precoCusto = 1.30;
 int idCliente = 1;
 int idFatura = 11111;
 
@@ -54,6 +54,7 @@ void inserir(string** x) {
         {
             if (name == x[i][1])
                 repetido = 1;
+
         }
 
         x[idProd][1] = name;
@@ -185,8 +186,6 @@ void eliminar(int op, string** x) {
     idProd--; // Esquecer ultimo item
 }
 
-
-
 int listEd(string** x,int aux) {
     int op;
     bool notempty = 0;
@@ -241,8 +240,9 @@ void prodBase(string** x) {
     x[1][3] = "2.90";
 }
 
-int prodList(string** x) {
+int prodList(string** x, bool user) {           //0 -> Cliente | 1 -> Admin
     bool notempty = 0;
+    limpaEcra();
     if (idProd < 1) {   //Quando ID = 0 Quer dizer que nenhum item existe ainda
         limpaEcra();
         cout << "Nenhum produto encontrado";
@@ -267,7 +267,13 @@ int prodList(string** x) {
         if (x[i][2] != "0") // So mostrar produtos com stock
         {
             cout << "|" << endl;
-            cout << "| " << i << " - " << x[i][1] << " - " << x[i][3] << " € - " << x[i][2] << endl;
+            cout << "| " << i << " - " << x[i][1] << " - ";
+            
+            if (user)   
+                cout << x[i][3] << " € - " << x[i][2] << endl;
+            else 
+                cout << stod(x[i][3]) * precoCusto << " € - " << x[i][2] << endl;
+
         }else {
             cout << "|" << endl;
             cout << "| " << i << " - " << x[i][1] << " Fora de Stock " << endl;
@@ -379,6 +385,7 @@ int checkout(string** x) {
     bool notempty = 0;
     double moedas,total = 0 ,tiva=0;
     
+    limpaEcra();
     if (idProd < 1) {   //Quando ID = 0 Quer dizer que nenhum item existe ainda
         limpaEcra();
         cout << "Nenhum produto encontrado";
@@ -402,9 +409,9 @@ int checkout(string** x) {
         if (x[i][2] != "0") // So mostrar produtos com stock
         {
             cout << "|" << endl;
-            cout << "| " << i << " - " << x[i][1] << " - " << x[i][3] << " € - " << x[i][2] << endl;
+            cout << "| " << i << " - " << x[i][1] << " - " << stod(x[i][3]) * precoCusto << " € - " << x[i][2] << endl;
 
-            total = total + (stod(x[i][3]) * stoi(x[i][2]));
+            total = total + (stod(x[i][3]) * precoCusto * stoi(x[i][2]));
             tiva = total + (total * iva);
         }
         else {
@@ -433,7 +440,6 @@ int checkout(string** x) {
         idCliente++;
 
         time_t t = time(0);
-        //now = localtime(&t);
 
         cout << "| Data:" << ctime(&t);          //diahora
         cout << "@@@@@@@@@@@@@@@@@@" << endl;
@@ -455,8 +461,14 @@ int checkout(string** x) {
         cin.ignore();
         cin.get();
     }
-    else {  //cancelar compra e limpar carrinho
-
+    else {                  //cancelar compra e limpar carrinho (Falta Eliminar)
+        limpaEcra();
+        cout << "@@@@@@@@@@@@@@@@@@" << endl;
+        cout << "@ Compra Anulada @";
+        cout << "@@@@@@@@@@@@@@@@@@" << endl;
+        cout << "Prima Enter para continuar...";
+        cin.ignore();
+        cin.get();
     }
 }
 
@@ -464,13 +476,13 @@ int venda(string** x, string** carrinho) {
     while (true) {
         switch (vendaUI()) {
         case 1:     //Listar
-            prodList(x);
+            prodList(x, 0);
             break;
         case 2:     //Adicionar ao carrinho
             adicionarCarrinho(x, carrinho);  
             break;
         case 3:     //Carrinho
-            prodList(carrinho);
+            prodList(carrinho, 0);
             limpaEcra(); 
             break;
         case 4:     //Checkout
