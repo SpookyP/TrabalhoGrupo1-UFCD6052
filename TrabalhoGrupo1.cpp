@@ -1,7 +1,5 @@
 #include <iostream>
 #include <string>
-#include <algorithm>
-#include <cctype>
 #pragma warning(disable : 4996)
 #include <ctime>
 
