@@ -12,7 +12,7 @@ int idCliente = 1;
 int idFatura = 11111;
 
 void limpaEcra(){
-    #ifdef _WIN32
+#ifdef _WIN32
     system("cls");
 #else
     system("clear");
@@ -188,7 +188,24 @@ int editarOP(int op, string** x) {
 
 }
 
-void eliminar(int op, string** x) {
+int eliminar(int op, string** x) {
+    limpaEcra();
+    cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;
+    cout << "@                @" << endl;
+    cout << "@ Tem a Certeza? @" << endl;
+    cout << "@      S/N       @" << endl;
+    cout << "@                @" << endl;
+    cout << "@@@@@@@@@@@@@@@@@@" << endl;
+
+
+
+    string resposta;
+    cin.ignore();
+    cin >> resposta;
+    limpaEcra();
+    if (tolower(resposta[0]) == tolower('n')) {
+        return 0;
+    }   
     
     for (int i = 0; i <= idProd; i++) // Eliminar = trocar tudo a frente do ID a ser apagado
     {
@@ -206,9 +223,8 @@ void eliminar(int op, string** x) {
 int listEd(string** x,int aux) {
     int op;
     bool notempty = 0;
-
+    limpaEcra();
     if (idProd < 1) {   //Quando ID = 0 Quer dizer que nenhum item existe ainda
-        limpaEcra();
         cout << "Nenhum produto encontrado";
         return 0;
     }
@@ -219,7 +235,6 @@ int listEd(string** x,int aux) {
         }
     }
     if (!(notempty)) {
-        limpaEcra();
         cout << "Nenhum produto encontrado";
         return 0;
     }
@@ -241,6 +256,7 @@ int listEd(string** x,int aux) {
             editarOP(op, x);
             break;
         case 2:
+            limpaEcra();
             eliminar(op, x);
             break;
         default:
@@ -459,6 +475,9 @@ int checkout(string** x) {
         time_t t = time(0);
 
         cout << "| Data:" << ctime(&t);          //diahora
+
+
+
         cout << "@@@@@@@@@@@@@@@@@@" << endl;
         
         for (int i = 1; i <= idProd; i++)
