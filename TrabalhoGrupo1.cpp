@@ -203,7 +203,7 @@ int eliminar(int op, string** x) {
     cin.ignore();
     cin >> resposta;
     limpaEcra();
-    if (tolower(resposta[0]) == tolower('n')) {
+    if (tolower(resposta[0]) != tolower('s')) {
         return 0;
     }   
     
