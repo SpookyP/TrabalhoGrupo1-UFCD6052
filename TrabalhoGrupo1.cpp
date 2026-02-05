@@ -188,6 +188,26 @@ int editarOP(int op, string** x) {
 
 }
 
+void cancelarCarrinho(string** x,string** carrinho) {
+
+    for (int i = 0; i <= idProd; i++)
+    {
+        for (int j = 0; j < idProd; j++)
+        {                                   //corrijir
+            if (x[j][1] == carrinho[i][1]) {
+                int n = stoi(carrinho[i][2]);
+                n += stoi(x[j][2]);
+                x[j][2] = to_string(n);
+            }
+        }
+
+        carrinho[i][0] = "";
+        carrinho[i][1] = "";
+        carrinho[i][2] = "";
+        carrinho[i][3] = "";
+    }
+}
+
 int eliminar(int op, string** x) {
     limpaEcra();
     cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;
@@ -196,8 +216,6 @@ int eliminar(int op, string** x) {
     cout << "@      S/N       @" << endl;
     cout << "@                @" << endl;
     cout << "@@@@@@@@@@@@@@@@@@" << endl;
-
-
 
     string resposta;
     cin.ignore();
@@ -526,7 +544,9 @@ int venda(string** x, string** carrinho) {
             limpaEcra();
             break;
         case 5:     //Voltar
-        limpaEcra();
+            cancelarCarrinho(x,carrinho);
+            limpaEcra();
+            cout << "Compra foi cancelada";
         return 0;
         default:     //Erro
             cout << " Invalid Result!";
