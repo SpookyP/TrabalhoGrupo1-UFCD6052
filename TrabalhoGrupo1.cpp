@@ -3,7 +3,6 @@
 #pragma warning(disable : 4996)
 #include <ctime>
 #include <cstdlib>
-
 using namespace std;
 
 int idProd=0;//ID Base Produtos
@@ -39,9 +38,11 @@ void inserir(string** x) {
     float preco;
     int stock;
     bool repetido;
+
     idProd++;
     x[idProd][0] = idProd;
     limpaEcra();
+
     do {
         repetido = 0;
         cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;
@@ -70,7 +71,7 @@ void inserir(string** x) {
         if (repetido)
             cout << "Nome Repetido" << endl;
     } while (repetido);
-    //-----------
+
     do {
         cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;
         cout << "@                @" << endl;
@@ -79,11 +80,14 @@ void inserir(string** x) {
         cout << "@@@@@@@@@@@@@@@@@@" << endl;
         cin >> stock;
         limpaEcra();
+
         if (stock <= 0)
             cout << "Stock invalido";
     } while (stock <= 0);
+
+
     x[idProd][2] = to_string(stock);
-    //-----------
+
     do{
         cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;
         cout << "@                @" << endl;
@@ -146,12 +150,12 @@ int editarOP(int op, string** x) {
                     }
                 }
             }
-
-            x[idProd][1] = name;
             if (repetido)
                 cout << "Nome Repetido" << endl;
         } while (repetido);
+        x[op][1] = name;
         break;
+
     case 2: //Editar o Stock
         do {
             cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;
@@ -166,6 +170,7 @@ int editarOP(int op, string** x) {
         } while (stock <= 0);
         x[op][2] = to_string(stock);
         break;
+
     case 3: //Editar o Preco
         do {
             cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;
@@ -178,9 +183,9 @@ int editarOP(int op, string** x) {
             if (preco <= 0)
                 cout << "Preco invalido";
         } while (preco <= 0);
-
         x[op][3] = to_string(preco);
         break;
+
     default:
         limpaEcra();
         cout << "Opcao Invalida";
@@ -286,11 +291,23 @@ int listEd(string** x,int aux) {
 }
 
 void prodBase(string** x) {
-    idProd = 1;
+    idProd = 4;
     x[1][0] = "1";
-    x[1][1] = "Bolachas";
+    x[1][1] = "Meteora - Linkin Park";
     x[1][2] = "5";
-    x[1][3] = "2.90";
+    x[1][3] = "10";
+    x[2][0] = "2";
+    x[2][1] = "Piss in the River - Joji";
+    x[2][2] = "10";
+    x[2][3] = "15";
+    x[3][0] = "3";
+    x[3][1] = "Anjo da Guarda - Antonio Variacoes";
+    x[3][2] = "3";
+    x[3][3] = "18";
+    x[4][0] = "4";
+    x[4][1] = "The Darkside of the Moon - Pink Floid";
+    x[4][2] = "6";
+    x[4][3] = "14.30";
 }
 
 int prodList(string** x, bool user) {           //0 -> Cliente | 1 -> Admin
