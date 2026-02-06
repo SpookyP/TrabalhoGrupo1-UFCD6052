@@ -22,12 +22,14 @@ void limpaEcra(){
 int menu() {
     int x;
     cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;
+    cout << "@ # Musicaltec # @" << endl;
+    cout << "@@@@@@@@@@@@@@@@@@" << endl;
     cout << "@                @" << endl;
     cout << "@  1 - Venda     @" << endl;
     cout << "@  2 - Produto   @" << endl;
     cout << "@  3 - Sair      @" << endl;
     cout << "@                @" << endl;
-    cout << "@@@@@@@@@@@@@@@@@@" << endl;
+    cout << "@@@@@@@@@@@@@@@@@@v2" << endl;
     cin >> x;
     limpaEcra();
     return x;
@@ -38,7 +40,6 @@ void inserir(string** x) {
     float preco;
     int stock;
     bool repetido;
-
     idProd++;
     x[idProd][0] = idProd;
     limpaEcra();
@@ -52,6 +53,7 @@ void inserir(string** x) {
         cout << "@@@@@@@@@@@@@@@@@@" << endl;
         cin >> name;
         limpaEcra();
+
         //Verificar Nome Repetido
         for (int i = 0; i <= idProd; i++)
         {
@@ -69,7 +71,7 @@ void inserir(string** x) {
 
         x[idProd][1] = name;
         if (repetido)
-            cout << "Nome Repetido" << endl;
+            cout << "!!Nome Repetido!!" << endl;
     } while (repetido);
 
     do {
@@ -81,9 +83,9 @@ void inserir(string** x) {
         cin >> stock;
         limpaEcra();
 
-        if (stock <= 0)
-            cout << "Stock invalido";
-    } while (stock <= 0);
+        if (stock < 0)
+            cout << "!!Stock invalido!!";
+    } while (stock < 0);
 
 
     x[idProd][2] = to_string(stock);
@@ -97,7 +99,7 @@ void inserir(string** x) {
         cin >> preco;
         limpaEcra();
         if (preco <= 0)
-            cout << "Preco invalido";
+            cout << "!!Preco invalido!!";
     } while (preco <= 0);
 
     x[idProd][3] = to_string(preco);
@@ -109,10 +111,10 @@ int editarOP(int op, string** x) {
     float preco;
     int stock;
     bool repetido;
-    
+
     if (op > idProd)
     {
-        cout << "Opcao Invalida";
+        cout << "!!Opcao Invalida!!";
         return 0;
     }
 
@@ -142,7 +144,7 @@ int editarOP(int op, string** x) {
                 string nomeExiste = x[i][1];
                 if (nomeExiste.length() == name.length()) {
                     repetido = 1;
-                    for (size_t j = 0; j < name.length(); j++) {
+                    for (int j = 0; j < name.length(); j++) {
                         if (tolower(nomeExiste[j]) != tolower(name[j])) {
                             repetido = 0;
                             break;
@@ -151,7 +153,7 @@ int editarOP(int op, string** x) {
                 }
             }
             if (repetido)
-                cout << "Nome Repetido" << endl;
+                cout << "!!Nome Repetido!!";
         } while (repetido);
         x[op][1] = name;
         break;
@@ -165,9 +167,9 @@ int editarOP(int op, string** x) {
             cout << "@@@@@@@@@@@@@@@@@@" << endl;
             cin >> stock;
             limpaEcra();
-            if (stock <= 0)
-                cout << "Stock invalido";
-        } while (stock <= 0);
+            if (stock < 0)
+                cout << "!!Stock invalido!!";
+        } while (stock < 0);
         x[op][2] = to_string(stock);
         break;
 
@@ -181,14 +183,14 @@ int editarOP(int op, string** x) {
             cin >> preco;
             limpaEcra();
             if (preco <= 0)
-                cout << "Preco invalido";
+                cout << "!!Preco invalido!!";
         } while (preco <= 0);
         x[op][3] = to_string(preco);
         break;
 
     default:
         limpaEcra();
-        cout << "Opcao Invalida";
+        cout << "!!Opcao Invalida!!";
         break;
     }
 
@@ -207,7 +209,9 @@ void cancelarCarrinho(string** x,string** carrinho) {
                 x[j][2] = to_string(n);
             }
         }
-
+    }
+    for (int i = 0; i <= idProd; i++)
+    {
         carrinho[i][0] = "";
         carrinho[i][1] = "";
         carrinho[i][2] = "";
@@ -217,7 +221,7 @@ void cancelarCarrinho(string** x,string** carrinho) {
 
 int eliminar(int op, string** x) {
     limpaEcra();
-    cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;
+    cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;   //Confirmacao de Eliminar dados - tem de receber S/s para poder Eliminar
     cout << "@                @" << endl;
     cout << "@ Tem a Certeza? @" << endl;
     cout << "@      S/N       @" << endl;
@@ -266,15 +270,27 @@ int listEd(string** x,int aux) {
     
     cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;   //inicio Lista
     cout << "| Selecione um ID:" << endl;
+    cout << "|" << endl;
+    cout << "| 0 - Cancelar" << endl;
     for (int i = 1; i <= idProd; i++)
     {
-        cout << "|" << endl;
-        cout << "| " << i << " - " << x[i][1] << endl;
+        if (x[i][2] != "0") // So mostrar produtos com stock
+        {
+            cout << "|" << endl;
+            cout << "| " << i << " - " << x[i][1] << " - " << x[i][3] << " € - " << x[i][2] << endl;
+        }
+        else {
+            cout << "|" << endl;
+            cout << "| " << i << " - " << x[i][1] << " Fora de Stock " << endl;
+        }
     }
     cout << "|" << endl;
     cout << "@@@@@@@@@@@@@@@@@@" << endl;
     cin >> op;  // ID a ser Editado ou Eliminado
     limpaEcra();
+    if (op == 0)
+        return 0;
+    
     switch (aux)
     {
         case 1:
@@ -296,29 +312,32 @@ void prodBase(string** x) {
     x[1][1] = "Meteora - Linkin Park";
     x[1][2] = "5";
     x[1][3] = "10";
+
     x[2][0] = "2";
     x[2][1] = "Piss in the River - Joji";
     x[2][2] = "10";
     x[2][3] = "15";
+
     x[3][0] = "3";
     x[3][1] = "Anjo da Guarda - Antonio Variacoes";
     x[3][2] = "3";
     x[3][3] = "18";
+
     x[4][0] = "4";
     x[4][1] = "The Darkside of the Moon - Pink Floid";
     x[4][2] = "6";
     x[4][3] = "14.30";
 }
 
-int prodList(string** x, bool user) {           //0 -> Cliente | 1 -> Admin
+int prodList(string** x, bool user) {           //0 -> Cliente 1 -> Admin
     bool notempty = 0;
     limpaEcra();
     if (idProd < 1) {   //Quando ID = 0 Quer dizer que nenhum item existe ainda
         limpaEcra();
-        cout << "Nenhum produto encontrado";
+        cout << "!!Nenhum produto encontrado!!";
         return 0;
     }
-    for (int i = 0; i <= idProd; i++)   //Verificar se o tamanho do nome � 0 em todos, se sim entao nao existem items
+    for (int i = 1; i <= idProd; i++)   //Verificar se o tamanho do nome � 0 em todos, se sim entao nao existem items
     {
         if (x[i][1].length() > 0) {
             notempty = 1;
@@ -326,7 +345,7 @@ int prodList(string** x, bool user) {           //0 -> Cliente | 1 -> Admin
     }
     if (!(notempty)) {
         limpaEcra();
-        cout << "Nenhum produto encontrado";
+        cout << "!!Nenhum produto encontrado!!";
         return 0;
     }
 
@@ -334,24 +353,28 @@ int prodList(string** x, bool user) {           //0 -> Cliente | 1 -> Admin
 
     for (int i = 1; i <= idProd; i++)
     {
-        if (x[i][2] != "0") // So mostrar produtos com stock
+        if (x[i][1]!="")
         {
-            cout << "|" << endl;
-            cout << "| " << i << " - " << x[i][1] << " - ";
-            
-            if (user)   
-                cout << x[i][3] << " € - " << x[i][2] << endl;
-            else 
-                cout << stod(x[i][3]) * precoCusto << " € - " << x[i][2] << endl;
+            if (x[i][2] != "0") // So mostrar produtos com stock
+            {
+                cout << "|" << endl;
+                cout << "| " << i << " - " << x[i][1] << " - ";
 
-        }else {
-            cout << "|" << endl;
-            cout << "| " << i << " - " << x[i][1] << " Fora de Stock " << endl;
+                if (user)
+                    cout << x[i][3] << " € - " << x[i][2] << endl;
+                else
+                    cout << stod(x[i][3]) * precoCusto << " € - " << x[i][2] << endl;
+
+            }
+            else {
+                cout << "|" << endl;
+                cout << "| " << i << " - " << x[i][1] << " Fora de Stock " << endl;
+            }
         }
     }
     cout << "|" << endl;
     cout << "@@@@@@@@@@@@@@@@@@" << endl;
-    cout << "Prima Enter";
+    cout << "Prima Enter para continuar...";
     cin.ignore();
     cin.get(); 
     limpaEcra();
@@ -380,7 +403,7 @@ int adicionarCarrinho(string** x, string** carrinho) {
     limpaEcra();
     if (idProd < 1) {   //Quando ID = 0 Quer dizer que nenhum item existe ainda
         limpaEcra();
-        cout << "Nenhum produto encontrado";
+        cout << "!!Nenhum produto encontrado!!";
         return 0;
     }
     for (int i = 0; i <= idProd; i++)   //Verificar se o tamanho do nome � 0 em todos, se sim entao nao existem items
@@ -391,11 +414,13 @@ int adicionarCarrinho(string** x, string** carrinho) {
     }
     if (!(notempty)) {
         limpaEcra();
-        cout << "Nenhum produto encontrado";
+        cout << "!!Nenhum produto encontrado!!";
         return 0;
     }
 
     cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;   //inicio Lista
+    cout << "|" << endl;
+    cout << "| 0 - Cancelar" << endl;
 
     do 
     {
@@ -416,6 +441,8 @@ int adicionarCarrinho(string** x, string** carrinho) {
         cout << "Escolha o produto: ";
         cin >> op;
         limpaEcra();
+        if (op == 0)
+            return 0;
     } while (x[op][2] < "0");
     do
     {
@@ -427,11 +454,10 @@ int adicionarCarrinho(string** x, string** carrinho) {
         cin >> qtd;
         limpaEcra();
         if (qtd <= 0 || qtd > stoi(x[op][2]))
-            cout << "Quantidade Invalida";
+            cout << "!!Quantidade Invalida!!";
     } while (qtd <= 0 || qtd > stoi(x[op][2]));
 
     limpaEcra();
-    
     
     int n = stoi(x[op][2]) - qtd;
     if (carrinho[op][2] > "0") {
@@ -464,11 +490,10 @@ int checkout(string** x) {
     bool notempty = 0;
     double moedas = -1,total = 0 ,tiva=0;
     bool free = 0;
-    
     limpaEcra();
     if (idProd < 1) {   //Quando ID = 0 Quer dizer que nenhum item existe ainda
         limpaEcra();
-        cout << "Nenhum produto encontrado";
+        cout << "!!Carrinho Vazio!!";
         return 0;
     }
     for (int i = 0; i <= idProd; i++)   //Verificar se o tamanho do nome � 0 em todos, se sim entao nao existem items
@@ -479,24 +504,19 @@ int checkout(string** x) {
     }
     if (!(notempty)) {
         limpaEcra();
-        cout << "Nenhum produto encontrado";
+        cout << "!!Carrinho Vazio!!";
         return 0;
     }
 
     cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;   //inicio Lista
     for (int i = 1; i <= idProd; i++)
     {
-        if (x[i][2] != "0") // So mostrar produtos com stock
-        {
+        if (x[i][0] != "") {
             cout << "|" << endl;
-            cout << "| " << i << " - " << x[i][1] << " - " << stod(x[i][3]) * precoCusto << " € - " << x[i][2] << endl;
+            cout << "| " << x[i][0] << " - " << x[i][1] << " - " << stod(x[i][3]) * precoCusto << " € - " << x[i][2] << endl;
 
             total = total + (stod(x[i][3]) * precoCusto * stoi(x[i][2]));
             tiva = total + (total * iva);
-        }
-        else {
-            cout << "|" << endl;
-            cout << "| " << i << " - " << x[i][1] << " Fora de Stock " << endl;
         }
     }
 
@@ -504,6 +524,7 @@ int checkout(string** x) {
     {
         do
         {
+            cout << "|" << endl;
             cout << "@@@@@@@@@@@@@@@@@@" << endl;
             cout << "| Total c/IVA:" << tiva << endl;
             cout << "@@@@@@@@@@@@@@@@@@" << endl;
@@ -545,8 +566,10 @@ int checkout(string** x) {
         
         for (int i = 1; i <= idProd; i++)
         {
-            cout << "|" << endl;
-            cout << "| " << i << " - " << x[i][1] << " - " << x[i][3] << "€ x " << x[i][2] << endl;
+            if (x[i][0] != "") {
+                cout << "|" << endl;
+                cout << "| " << i << " - " << x[i][1] << " - " << x[i][3] << "€ x " << x[i][2] << endl;
+            }
         }
         if (free == 0)
         {
@@ -585,12 +608,13 @@ int checkout(string** x) {
     else {                  //cancelar compra e limpar carrinho (Falta Eliminar)
         limpaEcra();
         cout << "@@@@@@@@@@@@@@@@@@" << endl;
-        cout << "@ Compra Anulada @";
+        cout << "@ Compra Anulada @" << endl;
         cout << "@@@@@@@@@@@@@@@@@@" << endl;
         cout << "Prima Enter para continuar...";
         cin.ignore();
         cin.get();
     }
+    limpaEcra();
 }
 
 int venda(string** x, string** carrinho) {
@@ -604,19 +628,18 @@ int venda(string** x, string** carrinho) {
             break;
         case 3:     //Carrinho
             prodList(carrinho, 0);
-            limpaEcra(); 
             break;
         case 4:     //Checkout
             checkout(carrinho);
-            limpaEcra();
+            cancelarCarrinho(x, carrinho);       
+            return 0;
             break;
         case 5:     //Voltar
             cancelarCarrinho(x,carrinho);
-            limpaEcra();
-            cout << "Compra foi cancelada";
+            cout << "!!Compra foi cancelada!!";
         return 0;
         default:     //Erro
-            cout << " Invalid Result!";
+            cout << "!!Opcao Invalida!!";
             break;
         }
     }
@@ -654,20 +677,19 @@ int produto(string** x) {     // Produto Manager Logic
             limpaEcra();
             return 0;
         default:     //Erro
-            cout << " Invalid Result!";
+            cout << "!!Opcao Invalida!!";
             break;
         }
     }
     limpaEcra();
 }
 
-
-
 int main()
 {
-    string** prodlist = new string * [100]; // 0 - ID; 1 - Nome; 2 - Stock; 3 - Preco
+    
+    string** proddb = new string * [100]; // 0 - ID; 1 - Nome; 2 - Stock; 3 - Preco
     for (int i = 0; i < 100; ++i) {
-        prodlist[i] = new string[4];
+        proddb[i] = new string[4];
     }
 
     string** carrinho = new string * [100]; // 0 - ID; 1 - Nome;
@@ -675,20 +697,20 @@ int main()
         carrinho[i] = new string[4];
     }
 
-    prodBase(prodlist);
+    prodBase(proddb);
 
     while (true) {
         switch (menu()) {
             case 1:     //Venda
-                venda(prodlist, carrinho);
+                venda(proddb, carrinho);
                 break;
             case 2:     //Produto
-                produto(prodlist);
+                produto(proddb);
                 break;
             case 3:     //Sair
                 return 0;
             default:
-                cout << "Resultado Invalido!";
+                cout << "!!Opcao Invalida!!";
                 break;
         }
     }
