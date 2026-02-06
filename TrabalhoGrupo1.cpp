@@ -27,7 +27,7 @@ int menu() {
     cout << "@  2 - Produto   @" << endl;
     cout << "@  3 - Sair      @" << endl;
     cout << "@                @" << endl;
-    cout << "@@@@@@@@@@@@@@@@@@" << endl;
+    cout << "@@@@@@@@@@@@@@@@@@v1" << endl;
     cin >> x;
     limpaEcra();
     return x;
@@ -190,11 +190,12 @@ int editarOP(int op, string** x) {
 
 void cancelarCarrinho(string** x,string** carrinho) {
 
-    for (int i = 0; i <= idProd; i++)
+    for (int i = 1; i <= idProd; i++)
     {
-        for (int j = 0; j < idProd; j++)
-        {                                   //corrijir
+        for (int j = 1; j <= idProd; j++)
+        {                                   
             if (x[j][1] == carrinho[i][1]) {
+                
                 int n = stoi(carrinho[i][2]);
                 n += stoi(x[j][2]);
                 x[j][2] = to_string(n);
