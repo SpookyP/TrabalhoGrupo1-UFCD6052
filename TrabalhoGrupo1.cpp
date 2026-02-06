@@ -2,6 +2,7 @@
 #include <string>
 #pragma warning(disable : 4996)
 #include <ctime>
+#include <cstdlib>
 
 using namespace std;
 
@@ -27,7 +28,7 @@ int menu() {
     cout << "@  2 - Produto   @" << endl;
     cout << "@  3 - Sair      @" << endl;
     cout << "@                @" << endl;
-    cout << "@@@@@@@@@@@@@@@@@@v1" << endl;
+    cout << "@@@@@@@@@@@@@@@@@@" << endl;
     cin >> x;
     limpaEcra();
     return x;
@@ -433,9 +434,19 @@ int adicionarCarrinho(string** x, string** carrinho) {
     }
 }
 
+bool lotaria() {
+    srand(time(NULL));
+    int randomNum = rand() % 2;
+    if (randomNum == 1)
+        return 1;
+    else
+        return 0;
+}
+
 int checkout(string** x) {
     bool notempty = 0;
-    double moedas,total = 0 ,tiva=0;
+    double moedas = -1,total = 0 ,tiva=0;
+    bool free = 0;
     
     limpaEcra();
     if (idProd < 1) {   //Quando ID = 0 Quer dizer que nenhum item existe ainda
@@ -471,17 +482,33 @@ int checkout(string** x) {
             cout << "| " << i << " - " << x[i][1] << " Fora de Stock " << endl;
         }
     }
-    do
-    { 
-        cout << "@@@@@@@@@@@@@@@@@@" << endl;
-        cout << "| Total c/IVA:" << tiva << endl;
-        cout << "@@@@@@@@@@@@@@@@@@" << endl;
-        cout << "Insira o montante do pagamento";
-        cin >> moedas;              // valor inserido
+
+    if (lotaria() != 1)
+    {
+        do
+        {
+            cout << "@@@@@@@@@@@@@@@@@@" << endl;
+            cout << "| Total c/IVA:" << tiva << endl;
+            cout << "@@@@@@@@@@@@@@@@@@" << endl;
+            cout << "Insira o montante do pagamento: ";
+            cin >> moedas;              // valor inserido
+            limpaEcra();
+        } while (moedas <= tiva && moedas != 0);        // verificar se é suficiente
+    }
+    else
+    {
         limpaEcra();
-    }while(moedas <= tiva && moedas != 0);        // verificar se é suficiente
-    
-    if (moedas != 0) {                 //se pagamento bem sucedido
+        free = 1;
+        cout <<endl << "@@@@@@@@@@@@@@@@@@" << endl;
+        cout << "@    Parabens    @" << endl;
+        cout << "@ A compra sera  @" << endl;
+        cout << "@  !!Gratuita!!  @" << endl;
+        cout << "@@@@@@@@@@@@@@@@@@" << endl;
+        cin.ignore();
+        cin.get();
+        limpaEcra();
+    }
+    if (moedas != 0 || free == 1) {                 //se pagamento bem sucedido
         cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;
         cout  << "@     Fatura     @" << endl;
         cout << "@@@@@@@@@@@@@@@@@@" << endl;
@@ -504,17 +531,39 @@ int checkout(string** x) {
             cout << "|" << endl;
             cout << "| " << i << " - " << x[i][1] << " - " << x[i][3] << "€ x " << x[i][2] << endl;
         }
-        cout << "|" << endl;
-        cout << "@@@@@@@@@@@@@@@@@@" << endl;
-        cout << "| Inserido     :   " << moedas << endl;    
-        cout << "| Total        :   " << total << endl;         //total sem iva
-        cout << "| IVA          :   " << tiva - total << endl;  //só iva
-        cout << "| Total a Pagar:   " << tiva <<endl;           //prob needs change
-        cout << "| Troco        :   " << moedas - tiva << endl; //resto
-        cout << "@@@@@@@@@@@@@@@@@@" << endl;
-        cout << "Prima Enter para continuar...";
-        cin.ignore();
-        cin.get();
+        if (free == 0)
+        {
+            cout << "|" << endl;
+            cout << "@@@@@@@@@@@@@@@@@@" << endl;
+            cout << "| Inserido     :   " << moedas << endl;
+            cout << "| Total        :   " << total << endl;         //total sem iva
+            cout << "| IVA          :   " << tiva - total << endl;  //só iva
+            cout << "| Total a Pagar:   " << tiva << endl;           //prob needs change
+            cout << "| Troco        :   " << moedas - tiva << endl; //resto
+            cout << "@@@@@@@@@@@@@@@@@@" << endl;
+            cout << "Prima Enter para continuar...";
+            cin.ignore();
+            cin.get();
+        }
+        else 
+        {
+            cout << "|" << endl;
+            cout << "@@@@@@@@@@@@@@@@@@" << endl;
+            cout << "|" << endl;
+            cout << "| Oferta da Casa " << endl;
+            cout << "|" << endl;
+            cout << "@@@@@@@@@@@@@@@@@@" << endl;
+            cout << "Prima Enter para continuar...";
+            cin.ignore();
+            cin.get();
+        }
+        for (int i = 1; i <= idProd; i++)
+        {
+            x[i][0] = "";
+            x[i][1] = "";
+            x[i][2] = "";
+            x[i][3] = "";
+        }
     }
     else {                  //cancelar compra e limpar carrinho (Falta Eliminar)
         limpaEcra();
