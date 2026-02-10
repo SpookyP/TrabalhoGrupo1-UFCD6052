@@ -525,7 +525,7 @@ void inserir(string** x) {
             string nomeExiste = x[i][1];
             if (nomeExiste.length() == nome.length()) {
                 repetido = 1;
-                for (size_t j = 0; j < nome.length(); j++) {
+                for (int j = 0; j < nome.length(); j++) {
                     if (tolower(nomeExiste[j]) != tolower(nome[j])) {
                         repetido = 0;
                         break;
