@@ -212,7 +212,7 @@ int prodList(string** x, bool utilizador) {
             }
             else {
                 cout << "|" << endl;
-                cout << "| " << i << " - " << x[i][1] << " Fora de Stock " << endl;
+                cout << "| " << i << " - " << x[i][1] << " - Fora de Stock " << endl;
             }
         }
     }
@@ -249,7 +249,7 @@ int adicionarCarrinho(string** x, string** carrinho) {
             }
             else {
                 cout << "|" << endl;
-                cout << "| " << i << " - " << x[i][1] << " Fora de Stock " << endl;
+                cout << "| " << i << " - " << x[i][1] << " - Fora de Stock " << endl;
             }
         }
 
@@ -273,7 +273,7 @@ int adicionarCarrinho(string** x, string** carrinho) {
             op = "0";
             cout << "!!Opcao Invalida!!";
         }
-    } while (x[stoi(op)][2] < "0");
+    } while (stoi(x[stoi(op)][2]) <= 0);
 
     do
     {
@@ -607,7 +607,7 @@ int listEd(string** x, int aux) {
             }
             else {
                 cout << "|" << endl;
-                cout << "| " << i << " - " << x[i][1] << " Fora de Stock " << endl;
+                cout << "| " << i << " - " << x[i][1] << " - Fora de Stock " << endl;
             }
         }
         cout << "|" << endl;
@@ -629,7 +629,7 @@ int listEd(string** x, int aux) {
             op = "0";
             cout << "!!Opcao Invalida!!";
         }
-    } while (x[stoi(op)][2] < "0");
+    } while (x[stoi(op)][2] == "");
 
     switch (aux)
     {
@@ -775,7 +775,6 @@ int eliminar(string op, string** x) {
     x[idProd][1] = "";
     idProd--; // Esquecer ultimo item
 }
-
 
 int main()
 {
