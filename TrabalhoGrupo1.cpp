@@ -13,10 +13,22 @@ float precoCusto = 1.30;
 int idCliente = 1;          //Número Cliente
 int idFatura = 11111;       //Número Fatura
 
+void limpaEcra() {
+#ifdef _WIN32           //Windows
+    system("cls");
+#else                   //Outros
+    system("clear");
+#endif
+}
+
 bool nValidoInt(string i) {     //Validar conversão string -> int
+    float aux;
     try
     {
         stoi(i);
+        aux = stof(i);
+        if (aux - stoi(i) > 0)
+            return false;
         return true;
     }
     catch (exception&)
@@ -37,31 +49,45 @@ bool nValidoFlo(string i) {     //Validar conversão string -> float
     }
 }
 
-void limpaEcra() {
-#ifdef _WIN32           //Windows
-    system("cls");
-#else                   //Outros
-    system("clear");
-#endif
+bool validarProd(string** x) {       //Validar se existem produtos na matriz
+    bool naoVazio = 0;
+    if (idProd < 1) {   //Quando ID = 0 Quer dizer que nenhum item existe ainda
+        limpaEcra();
+        cout << "!!Nenhum produto encontrado!!";
+        return 1;
+    }
+    for (int i = 1; i <= idProd; i++)   //Verificar se o tamanho do nome é maior que 0, se sim entao nao existem items
+    {
+        if (x[i][1].length() > 0) {
+            naoVazio = 1;
+        }
+    }
+    if (!(naoVazio)) {
+        limpaEcra();
+        cout << "!!Nenhum produto encontrado!!";
+        return 1;
+    }
+    return 0;
 }
 
 //inicializar funções
-void prodBase(string * *x);
-char menu();        //Menu Padrão
-int venda(string * *x, string * *carrinho);
-char vendaUI();         //Menu Venda
-int prodList(string * *x, bool utilizador);         //Listar produtos
-int adicionarCarrinho(string * *x, string * *carrinho);
-int checkout(string * *x);
-bool lotaria();
-void cancelarCarrinho(string * *x, string * *carrinho);
 
-int produto(string * *x);       // Opções de menu produto
-char produtoUI();       //Menu Produto
-void inserir(string * *x);
-int listEd(string * *x, int aux);
-int editarOP(string op, string * *x);
-int eliminar(string op, string * *x);
+void prodBase(string** x);                              //Produtos pré-definidos
+char menu();                                            //Menu Padrão
+int venda(string** x, string** carrinho);               //Opções de menu venda
+char vendaUI();                                         //Menu Venda
+int prodList(string * *x, bool utilizador);             //Listar produtos
+int adicionarCarrinho(string** x, string** carrinho);   //Adicionar produtos ao carrinho
+void checkout(string** x);                              //Checkout e Fatura
+bool lotaria();                                         //Chance de ganhar oferta
+void cancelarCarrinho(string** x, string** carrinho);   //Cancelar compra e limpar carrinho
+
+int produto(string * *x);               //Opções de menu produto
+char produtoUI();                       //Menu Produto
+void inserir(string * *x);              //Inserir novo produto
+int listEd(string** x, int aux);        //Listar produtos para Editar ou Eliminar
+int editarOP(string op, string** x);    //Editar produto
+int eliminar(string op, string** x);    //Eliminar produto
 
 //Produtos e Menu
 
@@ -122,6 +148,8 @@ int venda(string** x, string** carrinho) {
             prodList(carrinho, 0);
             break;
         case '4':     //Checkout
+            if (validarProd(carrinho))
+                break;
             checkout(carrinho);
             cancelarCarrinho(x, carrinho);
             limpaEcra();
@@ -160,32 +188,18 @@ char vendaUI() {
 }
 
 int prodList(string** x, bool utilizador) {     
-    bool naoVazio = 0;
     limpaEcra();
-    if (idProd < 1) {   //Quando ID = 0 Quer dizer que nenhum item existe ainda
-        limpaEcra();
-        cout << "!!Nenhum produto encontrado!!";
-        return 0;
-    }
-    for (int i = 1; i <= idProd; i++)   //Verificar se o tamanho do nome � 0 em todos, se sim entao nao existem items
-    {
-        if (x[i][1].length() > 0) {
-            naoVazio = 1;
-        }
-    }
-    if (!(naoVazio)) {
-        limpaEcra();
-        cout << "!!Nenhum produto encontrado!!";
+    if (validarProd(x)) {
         return 0;
     }
 
-    cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;   //inicio Lista
+    cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;   //Inicio Lista
 
     for (int i = 1; i <= idProd; i++)
     {
         if (x[i][1] != "")
         {
-            if (x[i][2] != "0")     // So mostrar produtos com stock
+            if (x[i][2] != "0")     //So mostrar produtos com stock
             {
                 cout << "|" << endl;
                 cout << "| " << i << " - " << x[i][1] << " - ";
@@ -216,31 +230,19 @@ int adicionarCarrinho(string** x, string** carrinho) {
     int opAux = -1;
     int qtd;
     limpaEcra();
-    if (idProd < 1) {   //Quando ID = 0 Quer dizer que nenhum item existe ainda
-        limpaEcra();
-        cout << "!!Nenhum produto encontrado!!";
-        return 0;
-    }
-    for (int i = 0; i <= idProd; i++)   //Verificar se o tamanho do nome � 0 em todos, se sim entao nao existem items
-    {
-        if (x[i][1].length() > 0) {
-            naoVazio = 1;
-        }
-    }
-    if (!(naoVazio)) {
-        limpaEcra();
-        cout << "!!Nenhum produto encontrado!!";
+    if (validarProd(x)) {
         return 0;
     }
 
     do
     {
-        cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;   //inicio Lista
+        cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;   //Inicio Lista
         cout << "|" << endl;
         cout << "| 0 - Cancelar" << endl;
+
         for (int i = 1; i <= idProd; i++)
         {
-            if (x[i][2] != "0") // So mostrar produtos com stock
+            if (x[i][2] != "0") //So mostrar produtos com stock
             {
                 cout << "|" << endl;
                 cout << "| " << i << " - " << x[i][1] << " - " << x[i][3] << " € - " << x[i][2] << endl;
@@ -250,13 +252,14 @@ int adicionarCarrinho(string** x, string** carrinho) {
                 cout << "| " << i << " - " << x[i][1] << " Fora de Stock " << endl;
             }
         }
+
         cout << "|" << endl;
         cout << "@@@@@@@@@@@@@@@@@@" << endl;
 
-        cout << "Escolha o produto: ";
+        cout << "Escolha o produto: ";      
         cin >> op;
         limpaEcra();
-        if (nValidoInt(op))
+        if (nValidoInt(op))             //Validar escolha
             opAux = stoi(op);
         else
         {
@@ -265,7 +268,13 @@ int adicionarCarrinho(string** x, string** carrinho) {
         }
         if (opAux == 0)
             return 0;
+        if (stoi(op) > 99)
+        {
+            op = "0";
+            cout << "!!Opcao Invalida!!";
+        }
     } while (x[stoi(op)][2] < "0");
+
     do
     {
         cout << endl << "@@@@@@@@@@@@@@@@@@@@@@@" << endl;
@@ -282,16 +291,16 @@ int adicionarCarrinho(string** x, string** carrinho) {
     limpaEcra();
 
     int n = stoi(x[opAux][2]) - qtd;
-    if (carrinho[opAux][2] > "0") {
-        x[opAux][2] = to_string(n);
+    if (carrinho[opAux][2] > "0") {         //Existe no carrinho
+        x[opAux][2] = to_string(n);         //Combinar os dois stocks
         carrinho[opAux][0] = x[opAux][0];
         carrinho[opAux][1] = x[opAux][1];
         qtd += stod(carrinho[opAux][2]);
         carrinho[opAux][2] = to_string(qtd);
         carrinho[opAux][3] = x[opAux][3];
     }
-    else {
-        x[opAux][2] = to_string(n);
+    else {                                  //Não existe no carrinho
+        x[opAux][2] = to_string(n);         //Adicionar ao carrinho
         carrinho[opAux][0] = x[opAux][0];
         carrinho[opAux][1] = x[opAux][1];
         carrinho[opAux][2] = to_string(qtd);
@@ -299,30 +308,14 @@ int adicionarCarrinho(string** x, string** carrinho) {
     }
 }
 
-int checkout(string** x) {
-    bool naoVazio = 0;
+void checkout(string** x) {
     string moedas;
     float moedasAux = -1, total = 0, tiva = 0;
     bool gratis = 0;
     limpaEcra();
-    if (idProd < 1) {   //Quando ID = 0 Quer dizer que nenhum item existe ainda
-        limpaEcra();
-        cout << "!!Carrinho Vazio!!";
-        return 0;
-    }
-    for (int i = 0; i <= idProd; i++)   //Verificar se o tamanho do nome � 0 em todos, se sim entao nao existem items
-    {
-        if (x[i][1].length() > 0) {
-            naoVazio = 1;
-        }
-    }
-    if (!(naoVazio)) {
-        limpaEcra();
-        cout << "!!Carrinho Vazio!!";
-        return 0;
-    }
 
-    cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;   //inicio Lista
+    cout << endl << "@@@@@@@@@@@@@@@@@@" << endl;   //Inicio Lista
+
     for (int i = 1; i <= idProd; i++)
     {
         if (x[i][0] != "") {
@@ -342,7 +335,7 @@ int checkout(string** x) {
             cout << "@@@@@@@@@@@@@@@@@@" << endl;
             cout << "| Total c/IVA:" << tiva << endl;
             cout << "@@@@@@@@@@@@@@@@@@" << endl;
-            cout << "Insira o montante do pagamento: ";
+            cout << "Insira o montante do pagamento ou 0 para cancelar:" << endl;
             cin >> moedas;              // valor inserido
             if (nValidoFlo(moedas))
                 moedasAux = stof(moedas);
@@ -631,6 +624,11 @@ int listEd(string** x, int aux) {
         }
         if (opAux == 0)
             return 0;
+        if (stoi(op) > 99) 
+        {
+            op = "0";
+            cout << "!!Opcao Invalida!!";
+        }
     } while (x[stoi(op)][2] < "0");
 
     switch (aux)
